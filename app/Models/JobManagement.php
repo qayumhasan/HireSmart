@@ -10,14 +10,22 @@ class JobManagement extends Model
         'employer_id',
         'title',
         'description',
-        'location',
-        'required_skills',
         'min_salary',
         'max_salary',
         'is_active',
         'posted_at',
         'expires_at',
     ];
+
+    public function skills()
+{
+    return $this->morphToMany(Skill::class, 'skillable');
+}
+
+public function locations()
+{
+    return $this->morphToMany(Location::class, 'locationable');
+}
 
     protected $casts = [
         'posted_at' => 'datetime',

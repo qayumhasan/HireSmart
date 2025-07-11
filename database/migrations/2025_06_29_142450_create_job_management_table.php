@@ -16,8 +16,6 @@ return new class extends Migration
             $table->foreignId('employer_id')->constrained('users')->onDelete('cascade');
             $table->string('title');
             $table->text('description');
-            $table->json('location')->nullable();  // Comma-separated or JSON string of locations
-            $table->json('required_skills')->nullable(); // Comma-separated or JSON string of required skills
             $table->decimal('min_salary', 10, 2)->nullable();
             $table->decimal('max_salary', 10, 2)->nullable();
             $table->boolean('is_active')->default(true);

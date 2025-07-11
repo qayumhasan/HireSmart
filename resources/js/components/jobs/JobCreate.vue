@@ -1,0 +1,198 @@
+<template>
+    <div class="main-content-inner">
+                            <!-- main-content-wrap -->
+                            <div class="main-content-wrap">
+                                <div class="flex items-center flex-wrap justify-between gap20 mb-27">
+                                    <h3>Add New Vacancy</h3>
+                                    <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
+                                        <li>
+                                            <a href="index.html"><div class="text-tiny">Dashboard</div></a>
+                                        </li>
+                                        <li>
+                                            <i class="icon-chevron-right"></i>
+                                        </li>
+                                        <li>
+                                            <a href="#"><div class="text-tiny">Attributes</div></a>
+                                        </li>
+                                        <li>
+                                            <i class="icon-chevron-right"></i>
+                                        </li>
+                                        <li>
+                                            <div class="text-tiny">Add Attribute</div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <!-- new-attribute -->
+                                <div class="wg-box">
+                                    <form @submit.prevent="submitJob" class="form-new-product form-style-1">
+    <fieldset class="name">
+      <div class="body-title">Job Title</div>
+      <input
+        type="text"
+        placeholder="Job Title"
+        v-model="form.title"
+        required
+      />
+    </fieldset>
+
+    <fieldset class="name">
+      <div class="body-title">Description</div>
+      <textarea
+        placeholder="Job Description"
+        v-model="form.description"
+        required
+      ></textarea>
+    </fieldset>
+
+    <fieldset class="name">
+  <div class="body-title">Locations</div>
+  <select v-model="form.locations" multiple required>
+    <option v-for="(location,index) in locations" :key="index" :value="location.id">{{ location.name }}</option>
+
+  </select>
+</fieldset>
+
+<fieldset class="name">
+  <div class="body-title">Required Skills</div>
+  <select v-model="form.skills" multiple required>
+
+    <option v-for="(skill,index) in skills" :key="index" :value="skill.id">{{ skill.name }}</option>
+   
+  </select>
+</fieldset>
+
+    <fieldset class="name">
+      <div class="body-title">Min Salary</div>
+      <input
+        type="number"
+        step="0.01"
+        placeholder="Min Salary"
+        v-model.number="form.min_salary"
+        required
+      />
+    </fieldset>
+
+    <fieldset class="name">
+      <div class="body-title">Max Salary</div>
+      <input
+        type="number"
+        step="0.01"
+        placeholder="Max Salary"
+        v-model.number="form.max_salary"
+        required
+      />
+    </fieldset>
+
+    <fieldset class="name">
+      <div class="body-title">Is Active</div>
+      <select v-model="form.is_active" required>
+        <option :value="true">Active</option>
+        <option :value="false">Inactive</option>
+      </select>
+    </fieldset>
+
+    <fieldset class="name">
+      <div class="body-title">Posted At</div>
+      <input
+        type="date"
+        v-model="form.posted_at"
+        required
+      />
+    </fieldset>
+
+    <fieldset class="name">
+      <div class="body-title">Expires At</div>
+      <input
+        type="date"
+        v-model="form.expires_at"
+        required
+      />
+    </fieldset>
+
+    <div class="bot">
+      <div></div>
+      <button class="tf-button w208" type="submit">Save</button>
+    </div>
+  </form>
+                                </div>
+                                <!-- /new-category -->
+                            </div>
+                            <!-- /main-content-wrap -->
+                        </div>
+</template>
+
+<script>
+import axios from "axios";
+import api from '../../helpers/axios'
+import router from '../../router'
+
+export default {
+  name:'JobComponent',
+  data() {
+    return {
+      form: {
+        employer_id: 1,
+        title: "",
+        description: "",
+        min_salary: null,
+        max_salary: null,
+        is_active: true,
+        posted_at: "",
+        expires_at: "",
+        locations: "",
+        skills: "",
+      },
+      skills:'',
+      locations:''
+    };
+  },
+  mounted(){
+    this.fetchSkills();
+    this.fetchLocations();
+  },
+  methods: {
+    
+    submitJob() {
+      if (this.form.min_salary > this.form.max_salary) {
+        alert("Min salary cannot be greater than max salary.");
+        return;
+      }
+      const postData = { ...this.form };
+      postData.posted_at = this.form.posted_at + "T00:00:00.000000Z";
+      postData.expires_at = this.form.expires_at + "T00:00:00.000000Z";
+
+      api
+        .post('/jobs', postData)
+        .then((response) => {
+            this.$router.push({name:'joblist'})
+          alert("Job created successfully!");
+        })
+        .catch((error) => {
+          console.error("Failed to create job:", error);
+          alert("Failed to create job.");
+        });
+    },
+    fetchSkills() {
+      api
+        .get('/skills')
+        .then((response) => {
+          console.log(response.data.skills)
+          this.skills = response.data.skills || response.data;
+        })
+        .catch((error) => {
+          console.error("Error fetching skills:", error);
+        });
+    },
+    fetchLocations() {
+        api
+          .get('/locations')
+          .then((response) => {
+            this.locations = response.data.locations || response.data;
+          })
+          .catch((error) => {
+            console.error("Error fetching locations:", error);
+          });
+      },
+  },
+};
+</script>

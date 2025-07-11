@@ -103,23 +103,21 @@ class JobManagementController extends Controller
             'employer_id'      => 'required|exists:users,id',
             'title'            => 'required|string|max:255',
             'description'      => 'required|string',
-            'location'         => 'nullable|array',
-            'location.*'       => 'integer',
-            'required_skills'  => 'nullable|array',
-            'required_skills.*'=> 'integer',
+            'locations'         => 'nullable|array',
+            'locations.*'       => 'integer',
+            'skills'  => 'nullable|array',
+            'skills.*'=> 'integer',
             'min_salary'       => 'nullable|numeric',
             'max_salary'       => 'nullable|numeric',
             'is_active'        => 'boolean',
             'posted_at'        => 'nullable|date',
             'expires_at'       => 'nullable|date|after_or_equal:posted_at',
         ]);
-
-        // Convert arrays to JSON
-        $validated['location'] = json_encode($validated['location'] ?? []);
-        $validated['required_skills'] = json_encode($validated['required_skills'] ?? []);
         $validated['posted_at'] = $validated['posted_at'] ?? now();
 
         $job = JobManagement::create($validated);
+        $job->locations()->attach($validated['locations']);
+        $job->skills()->attach($validated['skills']);
 
         return response()->json([
             'message' => 'Job created successfully',
@@ -196,15 +194,26 @@ public function show(JobManagement $job)
  */
 public function update(Request $request, JobManagement $job)
 {
-    $validated = $request->validate([
-        'title' => 'sometimes|string|max:255',
-        'description' => 'sometimes|string',
-        'min_salary' => 'nullable|numeric',
-        'max_salary' => 'nullable|numeric',
-        'is_active' => 'boolean',
+   $validated = $request->validate([
+        'employer_id'      => 'required|exists:users,id',
+        'title'            => 'required|string|max:255',
+        'description'      => 'required|string',
+        'locations'         => 'nullable|array',
+        'locations.*'       => 'integer',
+        'skills'  => 'nullable|array',
+        'skills.*'=> 'integer',
+        'min_salary'       => 'nullable|numeric',
+        'max_salary'       => 'nullable|numeric',
+        'is_active'        => 'boolean',
+        'posted_at'        => 'nullable|date',
+        'expires_at'       => 'nullable|date|after_or_equal:posted_at',
     ]);
+    $validated['posted_at'] = $validated['posted_at'] ?? now();
 
+    
     $job->update($validated);
+    $job->locations()->sync($validated['locations']);
+    $job->skills()->sync($validated['skills']);
 
     return response()->json([
         'message' => 'Job updated successfully',
