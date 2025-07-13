@@ -41,10 +41,14 @@
                 {{ job.max_salary }}
               </div>
               <div class="list-icon-function">
-                <div class="item eye">
-                  <i class="icon-eye"></i>
-                </div>
+               
 
+                <router-link
+                  :to="{ name: 'JobView', params: { id: job.id } }"
+                  class="item eye"
+                >
+                <i class="icon-eye"></i>
+                </router-link>
                 <router-link
                   :to="{ name: 'JobEdit', params: { id: job.id } }"
                   class="item edit"

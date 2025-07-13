@@ -39,7 +39,7 @@ class JobManagementController extends Controller
 
     public function index()
     {
-        $jobs = JobManagement::latest()->get();
+        $jobs = JobManagement::with(['skills:id,name','locations:id,name'])->latest()->get();
 
     return response()->json([
         'message' => 'Jobs fetched successfully',
@@ -148,8 +148,22 @@ class JobManagementController extends Controller
  *     @OA\Response(response=404, description="Job not found")
  * )
  */
-public function show(JobManagement $job)
+public function show($id)
 {
+    $job = JobManagement::select('id','title',
+        'description',
+        'min_salary',
+        'max_salary',
+        'is_active',
+        'posted_at',
+        'expires_at')
+    ->with(['locations:id,name', 'skills:id,name'])
+    ->findOrFail($id);
+
+return response()->json([
+    'message' => 'Job fetched successfully',
+    'job' => $job
+]);
     return response()->json([
         'message' => 'Job fetched successfully',
         'job' => $job
@@ -195,7 +209,6 @@ public function show(JobManagement $job)
 public function update(Request $request, JobManagement $job)
 {
    $validated = $request->validate([
-        'employer_id'      => 'required|exists:users,id',
         'title'            => 'required|string|max:255',
         'description'      => 'required|string',
         'locations'         => 'nullable|array',
@@ -208,6 +221,7 @@ public function update(Request $request, JobManagement $job)
         'posted_at'        => 'nullable|date',
         'expires_at'       => 'nullable|date|after_or_equal:posted_at',
     ]);
+    $validated['employer_id'] = request()->user()->id;
     $validated['posted_at'] = $validated['posted_at'] ?? now();
 
     

@@ -4,6 +4,7 @@ import LoginComponent from '../components/auth/Login.vue';
 import JobListComponent from '../components/jobs/JobList.vue';
 import JobCreateComponent from '../components/jobs/JobCreate.vue';
 import JobEditComponent from '../components/jobs/JobEdit.vue';
+import JobViewComponent from '../components/jobs/View.vue';
 import SkillComponent from '../components/skill/index.vue';
 import SkillCreateComponent from '../components/skill/create.vue';
 import SkillEditComponent from '../components/skill/edit.vue';
@@ -34,6 +35,12 @@ const routes = [
                 path: '/jobs/:id/edit',
                 name: 'JobEdit',
                 component: JobEditComponent,
+                 meta: { requiresAuth: true, allowedRoles: ['admin', 'employer'] },
+            },
+            {
+                path: '/jobs/:id/view',
+                name: 'JobView',
+                component: JobViewComponent,
                  meta: { requiresAuth: true, allowedRoles: ['admin', 'employer'] },
             },
             {

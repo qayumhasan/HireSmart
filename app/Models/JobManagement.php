@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class JobManagement extends Model
 {
@@ -27,11 +28,25 @@ public function locations()
     return $this->morphToMany(Location::class, 'locationable');
 }
 
+public function postedAtFormatted(): Attribute
+{
+    return Attribute::get(
+        fn () => $this->posted_at?->format('M d, Y')
+    );
+}
+
+public function expiresAtFormatted(): Attribute
+{
+    return Attribute::get(
+        fn () => $this->expires_at?->format('M d, Y')
+    );
+}
+
     protected $casts = [
         'posted_at' => 'datetime',
         'expires_at' => 'datetime',
         'is_active' => 'boolean',
-        'location' => 'array',
-        'required_skills' => 'array',
+        'locations' => 'array',
+        'skills' => 'array',
     ];
 }
