@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import HomeComponent from '../components/Admin.vue';
 import LoginComponent from '../components/auth/Login.vue';
+import CandidateRegisterComponent from '../components/auth/CandidateRegister.vue';
 import JobListComponent from '../components/jobs/JobList.vue';
 import JobCreateComponent from '../components/jobs/JobCreate.vue';
 import JobEditComponent from '../components/jobs/JobEdit.vue';
@@ -14,6 +15,8 @@ import LocationCreateComponent from '../components/location/create.vue';
 import LocationEditComponent from '../components/location/edit.vue';
 
 import CareerListComponent from '../components/career/list.vue';
+import applicationComponent from '../components/career/form.vue';
+import applicationViewComponent from '../components/jobs/Application.vue';
 
 const routes = [
     {
@@ -47,43 +50,49 @@ const routes = [
                 path: '/skills',
                 component: SkillComponent,
                 name: 'skillList',
-                 meta: { requiresAuth: true, allowedRoles: ['admin', 'employer'] },
+                 meta: { requiresAuth: true, allowedRoles: ['admin'] },
             },
             {
                 path: '/skill-create',
                 component: SkillCreateComponent,
                 name: 'skillCreate',
-                 meta: { requiresAuth: true, allowedRoles: ['admin', 'employer'] },
+                 meta: { requiresAuth: true, allowedRoles: ['admin'] },
             },
             {
                 path: '/skill/:id/edit',
                 name: 'skillEdit',
                 component: SkillEditComponent,
+                 meta: { requiresAuth: true, allowedRoles: ['admin'] },
+            },
+            {
+                path: '/application/:id',
+                component: applicationViewComponent,
+                name: 'application',
                  meta: { requiresAuth: true, allowedRoles: ['admin', 'employer'] },
             },
             {
                 path: '/locations',
                 component: LocationComponent,
                 name: 'locationList',
-                 meta: { requiresAuth: true, allowedRoles: ['admin', 'employer'] },
+                 meta: { requiresAuth: true, allowedRoles: ['admin'] },
             },
             {
                 path: '/location-create',
                 component: LocationCreateComponent,
                 name: 'locationCreate',
-                 meta: { requiresAuth: true, allowedRoles: ['admin', 'employer'] },
+                 meta: { requiresAuth: true, allowedRoles: ['admin'] },
             },
             {
                 path: '/location/:id/edit',
                 name: 'locationEdit',
                 component: LocationEditComponent,
-                 meta: { requiresAuth: true, allowedRoles: ['admin', 'employer'] },
+                 meta: { requiresAuth: true, allowedRoles: ['admin'] },
             },
             {
                 path: '/locations',
                 component: LocationComponent,
                 name: 'locationList',
-                 meta: { requiresAuth: true, allowedRoles: ['admin', 'employer'] },
+                 meta: { requiresAuth: true, allowedRoles: ['admin'] },
             },
 
         ],
@@ -93,14 +102,20 @@ const routes = [
         path: '/career',
         component: CareerListComponent,
         name: 'careerList',
-         meta: { requiresAuth: true, allowedRoles: ['admin', 'employer'] },
+         meta: { requiresAuth: true, allowedRoles: ['admin', 'employer','candidate'] },
+    },
+    {
+        path: '/application-form/:id',
+        component: applicationComponent,
+        name: 'applicationForm',
+         meta: { requiresAuth: true, allowedRoles: ['admin', 'employer','candidate'] },
     },
     {
         path: '/login',
         name: 'Login',
         component: LoginComponent,
         meta: { guestOnly: true }
-    },
+    }
 
 ];
 
@@ -117,8 +132,14 @@ router.beforeEach((to, from, next) => {
     if (to.meta.requiresAuth && !isAuthenticated) {
       next({ name: 'Login' })
     } else if (to.meta.guestOnly && isAuthenticated) {
-      next({ name: 'Dashboard' })
-    } else if (to.meta.allowedRoles && !to.meta.allowedRoles.includes(role)) {
+        if (role === 'admin' || role === 'employer') {
+          next({ name: 'Joblist' })
+        } else if (role === 'candidate') {
+          next({ name: 'careerList' })
+        } else {
+          next({ name: 'Login' })
+        }
+      } else if (to.meta.allowedRoles && !to.meta.allowedRoles.includes(role)) {
       next({ name: 'NotAuthorized' })
     } else {
       next()

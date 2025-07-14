@@ -29,6 +29,11 @@ class User extends Authenticatable
         'role'
     ];
 
+    public function skills()
+    {
+        return $this->morphToMany(Skill::class, 'skillable');
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *

@@ -6,9 +6,12 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\JobManagement;
 use App\Models\JobApplication;
+use App\Repositories\Contracts\CandidateRepositoryInterface;
+use App\Http\Requests\JobSearchRequest;
 
 class CandidateController extends Controller
 {
+    public function __construct(protected CandidateRepositoryInterface $candidateRepository) {}
      /**
      * @OA\Get(
      *     path="/api/job/search",
@@ -38,21 +41,14 @@ class CandidateController extends Controller
      *     )
      * )
      */
-    public function index(Request $request)
+    public function search(JobSearchRequest $request)
     {
-
-        $query = JobManagement::query()->where('is_active', true);
-
-        if ($request->filled('keyword')) {
-            $query->where('title', 'like', '%' . $request->keyword . '%');
-        }
-
-        if ($request->filled('location')) {
-            $query->where('location', 'like', '%' . $request->location . '%');
-        }
-
-        return response()->json($query->latest()->paginate(10));
+        $jobs = $this->candidateRepository->search($request);
+        return response()->json([
+            'jobs' => $jobs
+        ]);
     }
+
 /**
  * @OA\Post(
  *     path="/api/jobs/{job}/apply",
@@ -133,34 +129,8 @@ class CandidateController extends Controller
  * )
  */
 
-    public function apply(Request $request, JobManagement $job)
-    {
-        $request->validate([
-            'cover_letter' => 'nullable|string',
-            'resume' => 'required|file|mimes:pdf|max:2048',
-        ]);
-
-        $alreadyApplied = JobApplication::where('user_id', 1)
-        ->where('job_id', $job->id)
-        ->exists();
-
-    if ($alreadyApplied) {
-        return response()->json([
-            'message' => 'You have already applied for this job.'
-        ], 409);
-    }
-        $resumePath = $request->file('resume')->store('resumes', 'public');
-
-        $application = JobApplication::create([
-            'user_id' => 1,
-            'job_id' => $job->id,
-            'cover_letter' => $request->cover_letter,
-            'resume_path' => $resumePath,
-        ]);
-
-        return response()->json([
-            'message' => 'Application submitted successfully.',
-            'application' => $application,
-        ], 201);
-    }
+ public function apply(Request $request, JobManagement $job)
+ {
+     return $this->candidateRepository->apply($request, $job);
+ }
 }

@@ -16,36 +16,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
     <!-- Theme Style -->
-    <link rel="stylesheet" type="text/css" href="{{asset('/')}}css/animate.min.css">
-    <link rel="stylesheet" type="text/css" href="{{asset('/')}}css/animation.css">
-    <link rel="stylesheet" type="text/css" href="{{asset('/')}}css/bootstrap.css">
-    <link rel="stylesheet" type="text/css" href="{{asset('/')}}css/bootstrap-select.min.css">
-    <link rel="stylesheet" type="text/css" href="{{asset('/')}}css/style.css">
+    <link rel="stylesheet" type="text/css" href="{{ asset('/') }}css/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ asset('/') }}css/animation.css">
+    <link rel="stylesheet" type="text/css" href="{{ asset('/') }}css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="{{ asset('/') }}css/bootstrap-select.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ asset('/') }}css/style.css">
 
 
 
     <!-- Font -->
-    <link rel="stylesheet" href="{{asset('/')}}font/fonts.css">
+    <link rel="stylesheet" href="{{ asset('/') }}font/fonts.css">
 
     <!-- Icon -->
-    <link rel="stylesheet" href="{{asset('/')}}icon/style.css">
+    <link rel="stylesheet" href="{{ asset('/') }}icon/style.css">
 
     <!-- Favicon and Touch Icons  -->
-    <link rel="shortcut icon" href="{{asset('/')}}images/favicon.png">
+    <link rel="shortcut icon" href="{{ asset('/') }}images/favicon.png">
     <link rel="apple-touch-icon-precomposed" href="images/favicon.png">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
+
 <body class="body">
     <!-- #wrapper -->
     <div id="wrapper">
-     <div id="app"></div>
+        <div id="app"></div>
     </div>
     <!-- /#wrapper -->
     <!-- Javascript -->
-    <script src="{{asset('/')}}js/jquery.min.js"></script>
-    <script src="{{asset('/')}}js/bootstrap.min.js"></script>
-    <script src="{{asset('/')}}js/bootstrap-select.min.js"></script>
-    <script src="{{asset('/')}}js/main.js"></script>
+    <script src="{{ asset('/') }}js/jquery.min.js"></script>
+    <script src="{{ asset('/') }}js/bootstrap.min.js"></script>
+    <script src="{{ asset('/') }}js/bootstrap-select.min.js"></script>
+    <script src="{{ asset('/') }}js/main.js"></script>
+
+    @php
+        \Debugbar::info();
+        \Debugbar::error('Something went wrong!');
+        \Debugbar::warning('Watch out!');
+        \Debugbar::addMessage('A custom message', 'custom_label');
+
+    @endphp
 </body>
 
 </html>

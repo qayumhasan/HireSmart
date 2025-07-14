@@ -9,7 +9,7 @@
       <h2>Skills</h2>
       <div class="skills">
         <div class="skill-badge" v-for="(skill,index) in job.skills" :key="index">{{ skill.name }}</div>
-      
+
       </div>
     </div>
 
@@ -18,38 +18,29 @@
                 {{ job.description }}
             </div>
 
-            
+
         </div>
 
         <!-- Candidate List -->
         <div class="applicant-list">
             <div class="section-title">Applicants</div>
 
-            <!-- Example applicant -->
-            <div class="applicant-item">
+
+
+            <div class="applicant-item" v-for="(application,index) in applications" :key="index">
                 <div class="applicant-details">
-                    <div class="applicant-name">Qayum Hasan</div>
-                    <div class="applicant-email">qayum@example.com</div>
+                    <div class="applicant-name">{{ application?.user?.name }}</div>
+                    <div class="applicant-email">{{ application?.user?.email }}</div>
                 </div>
                 <div class="applicant-actions">
-                    <a href="#">View Resume</a>
-                    <a href="#">Contact</a>
+                    <router-link
+                  :to="{ name: 'application', params: { id: application.id } }"
+                  class="item edit"
+                >
+                View Resume
+                </router-link>
                 </div>
             </div>
-
-            <div class="applicant-item">
-                <div class="applicant-details">
-                    <div class="applicant-name">Fatema Akter</div>
-                    <div class="applicant-email">fatema@example.com</div>
-                </div>
-                <div class="applicant-actions">
-                    <a href="#">View Resume</a>
-                    <a href="#">Contact</a>
-                </div>
-            </div>
-
-            <!-- If no applicants -->
-            <!-- <div class="no-applicants">No applications received yet.</div> -->
 
         </div>
     </div>
@@ -61,23 +52,25 @@ export default {
   name: 'JobView',
   data() {
     return {
-     job :{}
+     job :{},
+     applications:[],
     };
   },
   mounted() {
     this.fetchJob();
   },
   methods: {
-   
+
     fetchJob() {
       api.get(`/jobs/${this.$route.params.id}`)
         .then((res) => {
-          this.job = res.data.job || res.data;
-          
+          this.job = res?.data?.job || res.data;
+          this.applications = res?.data?.job?.applications || res.data;
+
         })
         .catch((err) => console.error('Failed to load job:', err));
     },
-    
+
   },
 };
 </script>

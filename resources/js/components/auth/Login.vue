@@ -50,6 +50,8 @@
 
   <script>
 import axios from "axios";
+import { useToast } from 'vue-toastification'
+import api from '../../helpers/axios';
 
 export default {
   name: "LoginPage",
@@ -62,13 +64,15 @@ export default {
   },
   methods: {
       async handleLogin() {
+        const toast = useToast()
+        toast.success('This is a success message!')
         try {
-          const apiUrl = import.meta.env.VITE_API_BASE_URL
-
-          const response = await axios.post(`${apiUrl}/login`, {
+            const toast = useToast()
+          const response = await api.post('/login', {
             email: this.email,
             password: this.password
           })
+
           const token = response.data.access_token
           const role = response.data.role
           localStorage.setItem('token', token)
@@ -76,7 +80,6 @@ export default {
           this.$router.push('/')
         } catch (error) {
           if (error.response) {
-            console.log(error.response);
             alert(error.response.data.message || 'Login failed')
           } else {
             alert('Something went wrong')
