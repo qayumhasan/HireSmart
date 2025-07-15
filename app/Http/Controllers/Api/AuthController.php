@@ -107,7 +107,8 @@ class AuthController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type' => 'Bearer',
-            'role' => $user->role
+            'role' => $user->role,
+            'message' => 'Successfully logged In !'
         ]);
     }
 
@@ -138,6 +139,6 @@ class AuthController extends Controller
 
     public function me(Request $request)
     {
-        return response()->json($request->user());
+        return response()->json($request->user()->load('skills:id,name'));
     }
 }

@@ -65,7 +65,6 @@ export default {
   methods: {
       async handleLogin() {
         const toast = useToast()
-        toast.success('This is a success message!')
         try {
             const toast = useToast()
           const response = await api.post('/login', {
@@ -78,9 +77,10 @@ export default {
           localStorage.setItem('token', token)
           localStorage.setItem('role', role)
           this.$router.push('/')
+          toast.success(response.data.message)
         } catch (error) {
           if (error.response) {
-            alert(error.response.data.message || 'Login failed')
+            toast.error(error.response.data.message || 'Login failed')
           } else {
             alert('Something went wrong')
           }

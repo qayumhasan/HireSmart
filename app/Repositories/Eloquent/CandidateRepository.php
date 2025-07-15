@@ -39,7 +39,7 @@ class CandidateRepository implements CandidateRepositoryInterface
                 }
             );
 
-        return $jobs = $query->with(['locations', 'skills'])->get();
+        return $jobs = $query->with(['locations', 'skills'])->latest()->get();
     }
 
     /**

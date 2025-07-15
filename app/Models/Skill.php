@@ -10,4 +10,8 @@ class Skill extends Model
 {
     return $this->morphedByMany(JobManagement::class, 'skillable');
 }
+public function users()
+{
+    return $this->morphedByMany(User::class, 'skillable');
+}
 }

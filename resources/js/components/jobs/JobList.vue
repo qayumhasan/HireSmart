@@ -41,7 +41,7 @@
                 {{ job.max_salary }}
               </div>
               <div class="list-icon-function">
-               
+
 
                 <router-link
                   :to="{ name: 'JobView', params: { id: job.id } }"
@@ -106,6 +106,7 @@ export default {
           console.error("Error fetching skills:", error);
         });
     },
+
   },
 };
 </script>

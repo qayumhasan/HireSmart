@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import DashboardComponent from '../components/admin/Dashboard.vue';
 import HomeComponent from '../components/Admin.vue';
 import LoginComponent from '../components/auth/Login.vue';
-import CandidateRegisterComponent from '../components/auth/CandidateRegister.vue';
+import CandidateAccountComponent from '../components/auth/CandidateAccount.vue';
 import JobListComponent from '../components/jobs/JobList.vue';
 import JobCreateComponent from '../components/jobs/JobCreate.vue';
 import JobEditComponent from '../components/jobs/JobEdit.vue';
@@ -22,6 +23,12 @@ const routes = [
     {
         path: '/', component: HomeComponent,
         children: [
+            {
+                path: '/',
+                component: DashboardComponent,
+                name: 'Dashboard',
+                 meta: { requiresAuth: true, allowedRoles: ['admin', 'employer'] },
+            },
             {
                 path: '/job-list',
                 component: JobListComponent,
@@ -115,6 +122,12 @@ const routes = [
         name: 'Login',
         component: LoginComponent,
         meta: { guestOnly: true }
+    },
+    {
+        path: '/candidate-account',
+        name: 'CandidateAccount',
+        component: CandidateAccountComponent,
+        meta: { requiresAuth: true, allowedRoles: ['admin', 'employer','candidate'] },
     }
 
 ];
@@ -133,7 +146,7 @@ router.beforeEach((to, from, next) => {
       next({ name: 'Login' })
     } else if (to.meta.guestOnly && isAuthenticated) {
         if (role === 'admin' || role === 'employer') {
-          next({ name: 'Joblist' })
+          next({ name: 'Dashboard' })
         } else if (role === 'candidate') {
           next({ name: 'careerList' })
         } else {

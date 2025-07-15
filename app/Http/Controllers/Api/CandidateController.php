@@ -133,4 +133,21 @@ class CandidateController extends Controller
  {
      return $this->candidateRepository->apply($request, $job);
  }
+
+ public function profileUpdate(Request $request)
+ {
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|max:255',
+        'selectedSkills' => 'required|array|min:1',
+        'selectedSkills.*' => 'integer|exists:skills,id',
+    ]);
+
+    $user = $request->user(); // or fetch user manually
+
+    // Sync skills
+    $user->skills()->sync($validated['selectedSkills']);
+
+    return response()->json(['message' => 'User Information updated successfully']);
+ }
 }

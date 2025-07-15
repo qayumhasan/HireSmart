@@ -4,7 +4,7 @@
         <!-- Job Description -->
         <div class="job-box">
             <div class="job-title">{{ job.title }}</div>
-            <div class="company-location">Deadline: {{ job.expires_at }}</div>
+            <div class="company-location">Deadline: {{ formatDate(job.expires_at) }}</div>
             <div class="section">
       <h2>Skills</h2>
       <div class="skills">
@@ -27,7 +27,9 @@
 
 
 
-            <div class="applicant-item" v-for="(application,index) in applications" :key="index">
+
+            <div v-if="applications.length > 0">
+                <div class="applicant-item" v-for="(application,index) in applications" :key="index">
                 <div class="applicant-details">
                     <div class="applicant-name">{{ application?.user?.name }}</div>
                     <div class="applicant-email">{{ application?.user?.email }}</div>
@@ -41,6 +43,11 @@
                 </router-link>
                 </div>
             </div>
+            </div>
+            <div v-else>
+                <p>No Data Found !</p>
+            </div>
+
 
         </div>
     </div>
@@ -69,6 +76,11 @@ export default {
 
         })
         .catch((err) => console.error('Failed to load job:', err));
+    },
+    formatDate(date) {
+      if (!date) return "-";
+      const options = { year: "numeric", month: "short", day: "numeric" };
+      return new Date(date).toLocaleDateString(undefined, options);
     },
 
   },
