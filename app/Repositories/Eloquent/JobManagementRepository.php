@@ -20,7 +20,7 @@ class JobManagementRepository implements JobManagementRepositoryInterface
      */
     public function Jobs(): Collection
     {
-        return JobManagement::with(['skills:id,name','locations:id,name'])->latest()->get();
+        return JobManagement::with(['skills:id,name','locations:id,name'])->orderBy('expires_at','DESC')->get();
     }
 
     /**

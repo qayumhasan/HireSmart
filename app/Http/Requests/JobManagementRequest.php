@@ -22,17 +22,20 @@ class JobManagementRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title'            => 'required|string|max:255',
-            'description'      => 'required|string',
-            'locations'         => 'nullable|array',
-            'locations.*'       => 'integer',
-            'skills'  => 'nullable|array',
-            'skills.*'=> 'integer',
-            'min_salary'       => 'nullable|numeric',
-            'max_salary'       => 'nullable|numeric',
-            'is_active'        => 'boolean',
-            'posted_at'        => 'nullable|date',
-            'expires_at'       => 'nullable|date|after_or_equal:posted_at',
+            'title'       => 'required|string|max:255',
+            'description' => 'required|string',
+            'locations.*'    => 'required|integer|exists:locations,id',
+
+            'skills'         => 'required|array',
+            'skills.*'       => 'required|integer|exists:skills,id',
+
+            'min_salary'     => 'nullable|numeric',
+            'max_salary'     => 'nullable|numeric',
+
+            'is_active'      => 'boolean',
+
+            'posted_at'      => 'nullable|date',
+            'expires_at'     => 'nullable|date|after_or_equal:posted_at',
         ];
     }
 }

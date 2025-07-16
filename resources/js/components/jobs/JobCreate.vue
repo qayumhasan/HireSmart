@@ -46,7 +46,7 @@
 
     <fieldset class="name">
   <div class="body-title">Locations</div>
-  <select v-model="form.locations" multiple required>
+  <select v-model="form.locations" required>
     <option v-for="(location,index) in locations" :key="index" :value="location.id">{{ location.name }}</option>
 
   </select>
@@ -57,7 +57,7 @@
   <select v-model="form.skills" multiple required>
 
     <option v-for="(skill,index) in skills" :key="index" :value="skill.id">{{ skill.name }}</option>
-   
+
   </select>
 </fieldset>
 
@@ -125,6 +125,7 @@
 import axios from "axios";
 import api from '../../helpers/axios'
 import router from '../../router'
+import { useToast } from 'vue-toastification'
 
 export default {
   name:'JobComponent',
@@ -151,10 +152,11 @@ export default {
     this.fetchLocations();
   },
   methods: {
-    
+
     submitJob() {
+        const toast = useToast()
       if (this.form.min_salary > this.form.max_salary) {
-        alert("Min salary cannot be greater than max salary.");
+        toast.error("Min salary cannot be greater than max salary.")
         return;
       }
       const postData = { ...this.form };
@@ -164,13 +166,25 @@ export default {
       api
         .post('/jobs', postData)
         .then((response) => {
-            this.$router.push({name:'joblist'})
-          alert("Job created successfully!");
+            router.push({name:'Joblist'})
+            toast.success(response.data.message)
         })
         .catch((error) => {
-          console.error("Failed to create job:", error);
-          alert("Failed to create job.");
-        });
+      if (error.response) {
+        const response = error.response;
+        if (response.status === 422 && response.data.errors) {
+          const errors = response.data.errors;
+          for (let field in errors) {
+            toast.error(errors[field][0]);
+          }
+        }
+        else if (response.data.message) {
+          toast.error(response.data.message);
+        } else {
+          toast.error("Something went wrong.");
+        }
+      }
+    });
     },
     fetchSkills() {
       api

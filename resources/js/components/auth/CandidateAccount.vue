@@ -26,7 +26,10 @@
         </ul>
       </div>
       <!-- add-new-user -->
-      <form class="form-add-new-user form-style-2"  @submit.prevent="updateProfile">
+      <form
+        class="form-add-new-user form-style-2"
+        @submit.prevent="updateProfile"
+      >
         <div class="wg-box">
           <div class="left">
             <h5 class="mb-4">Account</h5>
@@ -60,6 +63,24 @@
                 required=""
                 v-model="form.email"
               />
+            </fieldset>
+          </div>
+        </div>
+        <div class="wg-box">
+          <div class="left">
+            <h5 class="mb-4">Locations</h5>
+
+          </div>
+          <div class="right flex-grow">
+            <fieldset class="category">
+              <div class="body-title mb-10">
+
+              </div>
+              <div class="select">
+                <select class="" v-model="form.locations">
+                  <option v-for="(location,index) in locations" :key="index" :value="location.id" >{{ location.name }}</option>
+                </select>
+              </div>
             </fieldset>
           </div>
         </div>
@@ -111,17 +132,20 @@ export default {
     return {
       user: "",
       skills: "",
+      locations: [],
 
       form: {
         name: "",
         email: "",
         selectedSkills: [],
+        locations:''
       },
     };
   },
   mounted() {
     this.getUser();
     this.getSkills();
+    this.getLocations();
   },
   methods: {
     getUser() {
@@ -131,7 +155,8 @@ export default {
           this.user = res?.data;
           this.form.name = res?.data?.name;
           this.form.email = res?.data?.email;
-          this.form.selectedSkills = this.user.skills.map(skill => skill.id);
+          this.form.locations = res?.data?.locations[0]?.id;
+          this.form.selectedSkills = this.user.skills.map((skill) => skill.id);
         })
         .catch((error) => {
           console.error("Logout error:", error);
@@ -142,16 +167,24 @@ export default {
       api
         .get("/skills")
         .then((response) => {
-          console.log(response.data.skills);
           this.skills = response.data.skills || response.data;
         })
         .catch((error) => {
           console.error("Error fetching skills:", error);
         });
     },
+    getLocations() {
+      api
+        .get("/locations")
+        .then((response) => {
+          this.locations = response.data.locations || response.data;
+        })
+        .catch((error) => {
+          console.error("Error fetching skills:", error);
+        });
+    },
     async updateProfile() {
-
-        const toast = useToast();
+      const toast = useToast();
       try {
         const response = await api.post("/profile/update", this.form);
         toast.success(response.data.message);

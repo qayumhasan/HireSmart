@@ -4,6 +4,12 @@
     <ul class="menu-list">
       <!-- Job List: visible to admin and employer -->
       <li v-if="role === 'admin' || role === 'employer'" class="menu-item">
+        <router-link :to="{ name: 'Dashboard' }" class="">
+          <div class="icon"><i class="icon-pie-chart"></i></div>
+          <div class="text">Dashboard</div>
+        </router-link>
+      </li>
+      <li v-if="role === 'admin' || role === 'employer'" class="menu-item">
         <router-link :to="{ name: 'Joblist' }" class="">
           <div class="icon"><i class="icon-pie-chart"></i></div>
           <div class="text">Job List</div>

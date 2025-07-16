@@ -16,7 +16,7 @@
     </div>
 
     <div class="section">
-      <h2>Skills</h2>
+      <h2>Candidate Skills</h2>
       <div class="skills">
         <div class="skill-badge" v-for="(skill,index) in application?.user?.skills" :key="index">{{ skill.name }}</div>
 

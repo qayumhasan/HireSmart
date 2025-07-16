@@ -12,6 +12,13 @@ use App\Http\Requests\JobSearchRequest;
 class CandidateController extends Controller
 {
     public function __construct(protected CandidateRepositoryInterface $candidateRepository) {}
+
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('role:admin,employer,candidate'),
+        ];
+    }
      /**
      * @OA\Get(
      *     path="/api/job/search",
@@ -129,11 +136,24 @@ class CandidateController extends Controller
  * )
  */
 
+ /**
+  * Apply to the postion
+  * @param Request $request
+  * @param JobManagement $job
+  *
+  * @return [type]
+  */
  public function apply(Request $request, JobManagement $job)
  {
      return $this->candidateRepository->apply($request, $job);
  }
 
+ /**
+  * Candidate Profile Update
+  * @param Request $request
+  *
+  * @return [type]
+  */
  public function profileUpdate(Request $request)
  {
     $validated = $request->validate([
@@ -141,13 +161,26 @@ class CandidateController extends Controller
         'email' => 'required|email|max:255',
         'selectedSkills' => 'required|array|min:1',
         'selectedSkills.*' => 'integer|exists:skills,id',
+        'locations' => 'required|integer|exists:locations,id',
     ]);
 
-    $user = $request->user(); // or fetch user manually
-
-    // Sync skills
+    $user = $request->user();
     $user->skills()->sync($validated['selectedSkills']);
+    $user->locations()->sync($validated['locations']);
 
     return response()->json(['message' => 'User Information updated successfully']);
+ }
+
+ /**
+  * Show all active latest jobs
+  * @return [type]
+  */
+ public function jobList()
+ {
+    $jobs = $this->candidateRepository->latestJobs();
+    return response()->json([
+        'message' => 'Jobs fetched successfully',
+        'jobs'    => $jobs,
+    ]);
  }
 }

@@ -27,7 +27,7 @@ const routes = [
                 path: '/',
                 component: DashboardComponent,
                 name: 'Dashboard',
-                 meta: { requiresAuth: true, allowedRoles: ['admin', 'employer'] },
+                 meta: { requiresAuth: true, allowedRoles: ['admin', 'employer','candidate'] },
             },
             {
                 path: '/job-list',

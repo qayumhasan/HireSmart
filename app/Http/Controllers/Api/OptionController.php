@@ -10,6 +10,14 @@ use App\Models\Skill;
 class OptionController extends Controller
 {
 
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('role:admin,employer,candidate'),
+            new Middleware('role:admin,employer', only: ['locationStore','locationEdit','locationUpdate','locationDelete','skillStore','skillEdit','skillUpdate','skillDelete']),
+        ];
+    }
+
     public function locations()
     {
         $locations = Location::select('id', 'name')->orderBy('id', 'desc')->get();

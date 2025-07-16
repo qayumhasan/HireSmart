@@ -10,4 +10,8 @@ class Location extends Model
 {
     return $this->morphedByMany(JobManagement::class, 'locationable');
 }
+public function users()
+{
+    return $this->morphedByMany(User::class, 'locationables');
+}
 }

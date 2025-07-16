@@ -33,6 +33,10 @@ class User extends Authenticatable
     {
         return $this->morphToMany(Skill::class, 'skillable');
     }
+    public function locations()
+    {
+        return $this->morphToMany(Location::class, 'locationable');
+    }
 
     /**
      * The attributes that should be hidden for serialization.

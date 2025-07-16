@@ -66,7 +66,7 @@ export default {
       async handleLogin() {
         const toast = useToast()
         try {
-            const toast = useToast()
+
           const response = await api.post('/login', {
             email: this.email,
             password: this.password

@@ -18,10 +18,13 @@
         <div class="wg-table table-all-attribute">
           <ul class="table-title flex gap20 mb-14">
             <li>
-              <div class="body-title">Category</div>
+              <div class="body-title">Title</div>
             </li>
             <li>
-              <div class="body-title">Value</div>
+              <div class="body-title">Description</div>
+            </li>
+            <li>
+              <div class="body-title">Deadline Date</div>
             </li>
             <li>
               <div class="body-title">Action</div>
@@ -39,6 +42,9 @@
               <div class="body-text">
                 {{ job.description }} — Salary: {{ job.min_salary }} to
                 {{ job.max_salary }}
+              </div>
+              <div class="body-text">
+                {{ formatDate(job.expires_at) }}
               </div>
               <div class="list-icon-function">
 
@@ -105,6 +111,11 @@ export default {
         .catch((error) => {
           console.error("Error fetching skills:", error);
         });
+    },
+    formatDate(date) {
+      if (!date) return "-";
+      const options = { year: "numeric", month: "short", day: "numeric" };
+      return new Date(date).toLocaleDateString(undefined, options);
     },
 
   },

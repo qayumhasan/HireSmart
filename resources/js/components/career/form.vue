@@ -101,7 +101,6 @@ export default {
       this.form.resume = event.target.files[0];
     },
     async submitApplication(id) {
-        alert(this.job.id);
       const formData = new FormData();
       formData.append("name", this.form.name);
       formData.append("email", this.form.email);
@@ -119,10 +118,8 @@ export default {
             },
           }
         );
-
+        this.$router.push({name:"careerList"});
         this.toast.success(response.data.message);
-
-        // Reset form
         this.form = { name: "", email: "", phone: "", resume: null, cover: "" };
       } catch (error) {
         const message = error.response?.data?.message || "Submission failed";

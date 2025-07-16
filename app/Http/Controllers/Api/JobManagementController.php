@@ -14,7 +14,18 @@ class JobManagementController extends Controller
 {
     public function __construct(
         protected JobManagementRepositoryInterface $jobRepository
-    ) {}
+    ) {
+    }
+
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('auth:sanctum'),
+            new Middleware('role:admin,employer,candidate'),
+            new Middleware('role:admin,employer', only: ['store','update','destroy']),
+        ];
+    }
+
 
     /**
      * @OA\Get(

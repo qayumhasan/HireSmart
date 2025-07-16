@@ -4,6 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\JobManagement;
+use App\Models\JobApplication;
+use App\Models\User;
+use Carbon\Carbon;
 
 class AdminController extends Controller
 {
@@ -12,7 +16,25 @@ class AdminController extends Controller
      */
     public function index()
     {
-        //
+        $jobsQuery = JobManagement::where('is_active', 1)
+        ->whereDate('expires_at', '>=', Carbon::today());
+
+    $activeJobsCount = $jobsQuery->count();
+
+    $totalApplicationsCount = $jobsQuery->withCount('applications')
+        ->get()
+        ->sum('applications_count');
+
+        $distinctUsersAppliedCount = JobApplication::whereHas('job', function ($query) {
+            $query->where('is_active', 1)
+                  ->whereDate('expires_at', '>=', Carbon::today());
+        })->distinct('user_id')->count('user_id');
+
+    return response()->json([
+        'active_jobs' => $activeJobsCount,
+        'applications_on_active_jobs' => $totalApplicationsCount,
+        'total_users' => $distinctUsersAppliedCount,
+    ]);
     }
 
     /**

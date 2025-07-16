@@ -9,6 +9,7 @@ use App\Models\JobManagement;
 use App\Http\Requests\JobManagementRequest;
 use Illuminate\Support\Facades\DB;
 use App\Models\JobApplication;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -39,7 +40,8 @@ class CandidateRepository implements CandidateRepositoryInterface
                 }
             );
 
-        return $jobs = $query->with(['locations', 'skills'])->latest()->get();
+        return $jobs = $query->with(['locations', 'skills'])->where('is_active', 1)
+        ->whereDate('expires_at', '>=', Carbon::today())->latest()->get();
     }
 
     /**
@@ -109,9 +111,9 @@ class CandidateRepository implements CandidateRepositoryInterface
     }
 
 
-
-
-
-
-
+    public function latestJobs()
+    {
+        return JobManagement::with(['skills:id,name','locations:id,name'])->where('is_active', 1)
+        ->whereDate('expires_at', '>=', Carbon::today())->get();
+    }
 }

@@ -6,6 +6,9 @@
             <HeaderComponent/>
         </div>
         <div class="gap22 cols mb-5" style="margin-top: 5%;">
+            <div class="row justify-center ml-auto mb-5">
+                <h3>HireSmart Open Position</h3>
+            </div>
           <div class="row">
             <div class="col">
               <fieldset class="male">
@@ -48,6 +51,7 @@
             <ul class="table-title flex gap20 mb-14">
               <li><div class="body-title">Job Title</div></li>
               <li><div class="body-title">Skills</div></li>
+              <li><div class="body-title">Locations</div></li>
               <li><div class="body-title">Posted At</div></li>
               <li><div class="body-title">Deadline</div></li>
               <li><div class="body-title">Action</div></li>
@@ -144,7 +148,7 @@ export default {
     },
     fetchJobs() {
       api
-        .get(`/jobs`)
+        .get("/job/list")
         .then((response) => {
           this.jobs = response.data.jobs;
         })

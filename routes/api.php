@@ -7,27 +7,28 @@ use App\Http\Controllers\Api\{
     CandidateController,
     JobManagementController,
     ApplicationController,
-    OptionController
+    OptionController,
+    AdminController
 };
 
-// Public routes
+
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login',    [AuthController::class, 'login']);
 
 // Authenticated user routes
-Route::middleware(['auth:sanctum', 'role:admin,employer,candidate'])->group(function () {
+Route::middleware(['auth:sanctum'])->group(function () {
+
     Route::get('/me',     [AuthController::class, 'me']);
     Route::post('/logout',[AuthController::class, 'logout']);
-});
 
-// Protected routes with role check
-Route::middleware(['auth:sanctum', 'role:admin,employer,candidate'])->group(function () {
+    Route::get('/stats',[AdminController::class, 'index']);
 
     // Jobs
     Route::apiResource('/jobs', JobManagementController::class);
 
     // CandidateController
     Route::controller(CandidateController::class)->group(function () {
+        Route::get('/job/list', 'jobList');
         Route::post('/jobs/search', 'search');
         Route::post('/jobs/{job}/apply', 'apply');
         Route::post('/profile/update', 'profileUpdate');

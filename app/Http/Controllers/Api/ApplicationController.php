@@ -9,6 +9,13 @@ use App\Http\Resources\JobApplicationResource;
 
 class ApplicationController extends Controller
 {
+
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('role:admin,employer')
+        ];
+    }
     public  function applicationView(JobApplication $application)
     {
         $application->load('user.skills');
