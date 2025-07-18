@@ -59,8 +59,14 @@ git checkout master
    ```bash
    npm run dev
    ```
+5. Running Laravel Scheduler
 
+To run the Laravel scheduler continuously in the background (for local development), execute this command:
+
+```bash
+php artisan schedule:run
 ---
+
 
 ### Step 3: Docker Setup
 
