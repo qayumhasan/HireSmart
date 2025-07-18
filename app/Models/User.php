@@ -26,6 +26,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'location_id',
+        'expected_salary',
         'role'
     ];
 
@@ -33,9 +35,9 @@ class User extends Authenticatable
     {
         return $this->morphToMany(Skill::class, 'skillable');
     }
-    public function locations()
+    public function location()
     {
-        return $this->morphToMany(Location::class, 'locationable');
+        return $this->belongsTo(Location::class);
     }
 
     /**

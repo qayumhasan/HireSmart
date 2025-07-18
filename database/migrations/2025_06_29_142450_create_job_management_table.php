@@ -14,11 +14,13 @@ return new class extends Migration
         Schema::create('job_management', function (Blueprint $table) {
             $table->id();
             $table->foreignId('employer_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('location_id')->nullable()->constrained();
             $table->string('title');
             $table->text('description');
             $table->decimal('min_salary', 10, 2)->nullable();
             $table->decimal('max_salary', 10, 2)->nullable();
             $table->boolean('is_active')->default(true);
+            $table->boolean('is_archived')->default(false);
             $table->timestamp('posted_at')->useCurrent();
             $table->timestamp('expires_at')->nullable();
             $table->timestamps();

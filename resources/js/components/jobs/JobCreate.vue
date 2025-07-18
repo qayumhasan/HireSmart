@@ -45,8 +45,8 @@
     </fieldset>
 
     <fieldset class="name">
-  <div class="body-title">Locations</div>
-  <select v-model="form.locations" required>
+  <div class="body-title">Location</div>
+  <select v-model="form.location_id" required>
     <option v-for="(location,index) in locations" :key="index" :value="location.id">{{ location.name }}</option>
 
   </select>
@@ -132,7 +132,6 @@ export default {
   data() {
     return {
       form: {
-        employer_id: 1,
         title: "",
         description: "",
         min_salary: null,
@@ -140,7 +139,7 @@ export default {
         is_active: true,
         posted_at: "",
         expires_at: "",
-        locations: "",
+        location_id: "",
         skills: "",
       },
       skills:'',
@@ -190,7 +189,6 @@ export default {
       api
         .get('/skills')
         .then((response) => {
-          console.log(response.data.skills)
           this.skills = response.data.skills || response.data;
         })
         .catch((error) => {

@@ -9,6 +9,7 @@ use App\Models\JobManagement;
 use App\Http\Requests\JobManagementRequest;
 use Illuminate\Support\Facades\DB;
 use App\Models\JobApplication;
+use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -34,13 +35,11 @@ class CandidateRepository implements CandidateRepositoryInterface
             ->when(
                 $request->has('location_id') && !empty($request->location_id),
                 function ($query) use ($request) {
-                    $query->whereHas('locations', function ($q) use ($request) {
-                        $q->where('locations.id', $request->location_id); // Fix here
-                    });
+                    $query->where('location_id', $request->location_id);
                 }
             );
 
-        return $jobs = $query->with(['locations', 'skills'])->where('is_active', 1)
+        return $jobs = $query->with(['location', 'skills'])->where('is_active', 1)
         ->whereDate('expires_at', '>=', Carbon::today())->latest()->get();
     }
 
@@ -111,9 +110,16 @@ class CandidateRepository implements CandidateRepositoryInterface
     }
 
 
-    public function latestJobs()
+    /**
+     * Get Latest Job For Candidate
+     * @return Collection
+     */
+    public function latestJobs():Collection
     {
-        return JobManagement::with(['skills:id,name','locations:id,name'])->where('is_active', 1)
-        ->whereDate('expires_at', '>=', Carbon::today())->get();
+        return Cache::remember('recent_jobs', now()->addMinutes(5), function () {
+            return JobManagement::with(['skills:id,name','location:id,name'])->where('is_active', 1)
+            ->whereDate('expires_at', '>=', Carbon::today())->get();
+        });
+
     }
 }

@@ -9,4 +9,5 @@ interface CandidateRepositoryInterface
 {
     public function search(Request $request): Collection;
     public function apply(Request $request, JobManagement $job);
+    public function latestJobs():Collection;
 }

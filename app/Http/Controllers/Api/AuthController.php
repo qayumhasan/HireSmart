@@ -27,6 +27,7 @@ class AuthController extends Controller
      *             required={"name","email","password","password_confirmation"},
      *             @OA\Property(property="name", type="string", example="Jane Doe"),
      *             @OA\Property(property="email", type="string", format="email", example="jane@example.com"),
+     *             @OA\Property(property="role", type="string", format="role", example="candidate"),
      *             @OA\Property(property="password", type="string", format="password", example="secret123"),
      *             @OA\Property(property="password_confirmation", type="string", format="password", example="secret123")
      *         )
@@ -53,6 +54,7 @@ class AuthController extends Controller
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
+            'role' => 'candidate',
             'password' => Hash::make($validated['password']),
         ]);
 
@@ -72,8 +74,8 @@ class AuthController extends Controller
      *         required=true,
      *         @OA\JsonContent(
      *             required={"email","password"},
-     *             @OA\Property(property="email", type="string", format="email", example="jane@example.com"),
-     *             @OA\Property(property="password", type="string", format="password", example="secret123")
+     *             @OA\Property(property="email", type="string", format="email", example="admin@gmail.com"),
+     *             @OA\Property(property="password", type="string", format="password", example="password")
      *         )
      *     ),
      *     @OA\Response(
@@ -120,25 +122,25 @@ class AuthController extends Controller
     }
 
     /**
-     * @OA\Get(
-     *     path="/api/me",
-     *     summary="Get authenticated user info",
-     *     tags={"Authentication"},
-     *     security={{"sanctum":{}}},
-     *     @OA\Response(
-     *         response=200,
-     *         description="Authenticated user data",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="id", type="integer", example=1),
-     *             @OA\Property(property="name", type="string", example="Jane Doe"),
-     *             @OA\Property(property="email", type="string", example="jane@example.com")
-     *         )
-     *     )
-     * )
-     */
+ * @OA\Get(
+ *     path="/api/me",
+ *     summary="Get authenticated user info",
+ *     tags={"Authentication"},
+ *     security={{"bearerAuth":{}}},
+ *     @OA\Response(
+ *         response=200,
+ *         description="Authenticated user data",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="id", type="integer", example=1),
+ *             @OA\Property(property="name", type="string", example="Jane Doe"),
+ *             @OA\Property(property="email", type="string", example="jane@example.com")
+ *         )
+ *     )
+ * )
+ */
+public function me(Request $request)
+{
+    return response()->json($request->user()->load(['skills:id,name','location:id,name']));
+}
 
-    public function me(Request $request)
-    {
-        return response()->json($request->user()->load(['skills:id,name','locations:id,name']));
-    }
 }

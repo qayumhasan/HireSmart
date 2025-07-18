@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('role')->default('candidate');
             $table->timestamp('email_verified_at')->nullable();
+            $table->decimal('expected_salary', 10, 2)->nullable();
+            $table->foreignId('location_id')->nullable()->constrained();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();

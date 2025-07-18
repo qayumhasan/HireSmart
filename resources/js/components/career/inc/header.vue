@@ -91,7 +91,6 @@ export default {
         })
         .catch((error) => {
           console.error("Logout error:", error);
-          alert("Logout failed. Please try again.");
         });
     },
     getUser() {
@@ -102,7 +101,6 @@ export default {
         })
         .catch((error) => {
           console.error("Logout error:", error);
-          alert("Logout failed. Please try again.");
         });
     },
   },

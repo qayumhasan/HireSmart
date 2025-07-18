@@ -3,6 +3,16 @@
 namespace App\Http\Controllers;
 
 /**
+ * @OA\SecurityScheme(
+ *     securityScheme="bearerAuth",
+ *     type="http",
+ *     scheme="bearer",
+ *     bearerFormat="JWT",
+ *     description="Enter your bearer token in the format **Bearer &lt;token>**"
+ * )
+ */
+
+/**
  * @OA\Info(
  *      version="1.0.0",
  *      x={
@@ -21,6 +31,8 @@ namespace App\Http\Controllers;
  *     )
  * )
  */
+
+
 
 abstract class Controller
 {

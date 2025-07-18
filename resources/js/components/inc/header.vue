@@ -41,7 +41,17 @@
                 aria-labelledby="dropdownMenuButton3"
                 style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(-18px, 39px);"
               >
-
+              <li>
+                <router-link
+                  :to="{ name: 'CandidateAccount' }"
+                  class="user-item"
+                >
+                  <div class="icon">
+                    <i class="icon-user"></i>
+                  </div>
+                  <div class="body-title-2">Account</div>
+                </router-link>
+              </li>
 
                 <li>
                   <a href="#" class="user-item" @click.prevent="logout">
@@ -86,7 +96,6 @@ export default {
         })
         .catch((error) => {
           console.error("Logout error:", error);
-          alert("Logout failed. Please try again.");
         });
     },
     getUser() {
@@ -97,7 +106,6 @@ export default {
         })
         .catch((error) => {
           console.error("Logout error:", error);
-          alert("Logout failed. Please try again.");
         });
     },
   },

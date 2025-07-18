@@ -16,7 +16,7 @@ class AdminController extends Controller
      */
     public function index()
     {
-        $jobsQuery = JobManagement::where('is_active', 1)
+        $jobsQuery = JobManagement::where('is_active', 1)->where('is_archived','!=',1)
         ->whereDate('expires_at', '>=', Carbon::today());
 
     $activeJobsCount = $jobsQuery->count();

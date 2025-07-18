@@ -68,19 +68,32 @@
         </div>
         <div class="wg-box">
           <div class="left">
-            <h5 class="mb-4">Locations</h5>
+            <h5 class="mb-4">Locations & Expected Salary</h5>
 
           </div>
           <div class="right flex-grow">
-            <fieldset class="category">
+            <fieldset class="category  mb-24">
               <div class="body-title mb-10">
 
               </div>
               <div class="select">
-                <select class="" v-model="form.locations">
+                <select class="" v-model="form.location_id">
                   <option v-for="(location,index) in locations" :key="index" :value="location.id" >{{ location.name }}</option>
                 </select>
               </div>
+            </fieldset>
+
+            <fieldset class="email mb-24">
+              <input
+                class="flex-grow"
+                type="text"
+                placeholder="Expected Salary"
+                name="expected_salary"
+                tabindex="0"
+                aria-required="true"
+                required=""
+                v-model="form.expected_salary"
+              />
             </fieldset>
           </div>
         </div>
@@ -138,7 +151,8 @@ export default {
         name: "",
         email: "",
         selectedSkills: [],
-        locations:''
+        location_id:'',
+        expected_salary:'',
       },
     };
   },
@@ -155,12 +169,12 @@ export default {
           this.user = res?.data;
           this.form.name = res?.data?.name;
           this.form.email = res?.data?.email;
-          this.form.locations = res?.data?.locations[0]?.id;
+          this.form.location_id = res?.data?.location_id;
+          this.form.expected_salary = res?.data?.expected_salary;
           this.form.selectedSkills = this.user.skills.map((skill) => skill.id);
         })
         .catch((error) => {
           console.error("Logout error:", error);
-          alert("Logout failed. Please try again.");
         });
     },
     getSkills() {

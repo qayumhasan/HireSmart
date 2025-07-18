@@ -80,10 +80,8 @@
                     <div class="skills">
                       <div
                         class="skill-badge"
-                        v-for="(location, index) in job.locations"
-                        :key="index"
                       >
-                        {{ location.name }}
+                        {{ job?.location?.name }}
                       </div>
                     </div>
                   </div>

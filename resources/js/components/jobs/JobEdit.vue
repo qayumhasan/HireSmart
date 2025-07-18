@@ -25,8 +25,8 @@
           </fieldset>
 
           <fieldset class="name">
-            <div class="body-title">Locations</div>
-            <select v-model="form.locations" multiple required>
+            <div class="body-title">Location</div>
+            <select v-model="form.location_id" required>
               <option v-for="location in locations" :key="location.id" :value="location.id">
                 {{ location.name }}
               </option>
@@ -82,6 +82,7 @@
 
 <script>
 import api from '../../helpers/axios';
+import { useToast } from 'vue-toastification'
 
 export default {
   name: 'JobEdit',
@@ -89,7 +90,6 @@ export default {
     return {
       jobId: this.$route.params.id,
       form: {
-        employer_id: 1,
         title: '',
         description: '',
         min_salary: null,
@@ -97,7 +97,7 @@ export default {
         is_active: true,
         posted_at: '',
         expires_at: '',
-        locations: [],
+        location_id: '',
         skills: [],
       },
       skills: [],
@@ -129,7 +129,6 @@ export default {
         .then((res) => {
           const job = res.data.job || res.data;
           this.form = {
-            employer_id: job.employer_id,
             title: job.title,
             description: job.description,
             min_salary: job.min_salary,
@@ -137,13 +136,14 @@ export default {
             is_active: job.is_active,
             posted_at: job.posted_at?.split('T')[0],
             expires_at: job.expires_at?.split('T')[0],
-            locations: job.locations?.map(loc => loc.id) || [],
+            location_id: job?.location?.id,
             skills: job.skills?.map(skill => skill.id) || [],
           };
         })
         .catch((err) => console.error('Failed to load job:', err));
     },
     updateJob() {
+        const toast = useToast()
       if (this.form.min_salary > this.form.max_salary) {
         alert('Min salary cannot be greater than max salary.');
         return;
@@ -157,13 +157,25 @@ export default {
 
       api.put(`/jobs/${this.jobId}`, data)
         .then(() => {
-          alert('Job updated successfully!');
-          this.$router.push({ name: 'joblist' });
+            toast.success('Job updated successfully!');
+          this.$router.push({ name: 'Joblist' });
         })
-        .catch((err) => {
-          console.error('Update failed:', err);
-          alert('Failed to update job.');
-        });
+        .catch((error) => {
+      if (error.response) {
+        const response = error.response;
+        if (response.status === 422 && response.data.errors) {
+          const errors = response.data.errors;
+          for (let field in errors) {
+            toast.error(errors[field][0]);
+          }
+        }
+        else if (response.data.message) {
+          toast.error(response.data.message);
+        } else {
+          toast.error("Something went wrong.");
+        }
+      }
+    });
     },
   },
 };

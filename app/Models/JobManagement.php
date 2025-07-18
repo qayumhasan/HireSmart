@@ -14,6 +14,7 @@ class JobManagement extends Model
         'description',
         'min_salary',
         'max_salary',
+        'location_id',
         'is_active',
         'posted_at',
         'expires_at',
@@ -24,9 +25,9 @@ class JobManagement extends Model
     return $this->morphToMany(Skill::class, 'skillable');
 }
 
-public function locations()
+public function location()
 {
-    return $this->morphToMany(Location::class, 'locationable');
+    return $this->belongsTo(Location::class);
 }
 
     public function applications(): HasMany
@@ -51,8 +52,6 @@ public function expiresAtFormatted(): Attribute
     protected $casts = [
         'posted_at' => 'datetime',
         'expires_at' => 'datetime',
-        'is_active' => 'boolean',
-        'locations' => 'array',
-        'skills' => 'array',
+        'is_active' => 'boolean'
     ];
 }

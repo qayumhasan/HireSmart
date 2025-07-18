@@ -6,7 +6,7 @@
       <div class="wg-box">
         <div class="flex items-center justify-between gap10 flex-wrap">
           <div class="wg-filter flex-grow">
-            <h3>All Attributes</h3>
+            <h3>All Open Position </h3>
           </div>
           <router-link
             :to="{ name: 'Jobcreate' }"
@@ -25,6 +25,9 @@
             </li>
             <li>
               <div class="body-title">Deadline Date</div>
+            </li>
+            <li>
+              <div class="body-title">Status</div>
             </li>
             <li>
               <div class="body-title">Action</div>
@@ -46,6 +49,9 @@
               <div class="body-text">
                 {{ formatDate(job.expires_at) }}
               </div>
+              <div class="body-text text-danger text-bold">
+                {{job.is_archived ?'Archived':job.is_active?'Active':'In Active' }}
+              </div>
               <div class="list-icon-function">
 
 
@@ -62,7 +68,7 @@
                   <i class="icon-edit-3"></i>
                 </router-link>
 
-                <div class="item trash">
+                <div @click="deleteJob(job.id)" class="item trash">
                   <i class="icon-trash-2"></i>
                 </div>
               </div>
@@ -79,6 +85,7 @@
 
 <script>
 import api from '../../helpers/axios'
+import { useToast } from 'vue-toastification'
 
 export default {
   data() {
@@ -112,6 +119,19 @@ export default {
           console.error("Error fetching skills:", error);
         });
     },
+    deleteJob(id){
+        confirm('Are you sure you want to delete this item?');
+        const toast = useToast()
+        api
+          .delete(`/jobs/${id}`)
+          .then((response) => {
+            this.fetchJobs();
+            toast.success(response.data.message);
+          })
+          .catch((error) => {
+            console.error("Error fetching locations:", error);
+          });
+      },
     formatDate(date) {
       if (!date) return "-";
       const options = { year: "numeric", month: "short", day: "numeric" };

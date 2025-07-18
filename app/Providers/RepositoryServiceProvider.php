@@ -17,6 +17,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
         $this->app->bind(JobManagementRepositoryInterface::class, JobManagementRepository::class);
         $this->app->bind(CandidateRepositoryInterface::class, CandidateRepository::class);
+        $this->app->bind(CandidateRepositoryInterface::class, CandidateRepository::class);
     }
 
     public function boot(): void

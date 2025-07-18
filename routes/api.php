@@ -13,7 +13,7 @@ use App\Http\Controllers\Api\{
 
 
 Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login',    [AuthController::class, 'login']);
+Route::post('/login',    [AuthController::class, 'login'])->middleware('throttle:login');
 
 // Authenticated user routes
 Route::middleware(['auth:sanctum'])->group(function () {
@@ -30,7 +30,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::controller(CandidateController::class)->group(function () {
         Route::get('/job/list', 'jobList');
         Route::post('/jobs/search', 'search');
-        Route::post('/jobs/{job}/apply', 'apply');
+        Route::post('/jobs/{job}/apply', 'apply')->middleware('throttle:job_apply');
         Route::post('/profile/update', 'profileUpdate');
     });
 

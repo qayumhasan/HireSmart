@@ -8,6 +8,7 @@ COPY .bashrc /root/
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
+
 # mix
 RUN apt-get update \
   && apt-get install -y build-essential zlib1g-dev default-mysql-client curl gnupg procps vim git unzip libzip-dev libpq-dev \
@@ -58,7 +59,10 @@ WORKDIR /root
 EXPOSE 5173
 WORKDIR /var/www
 
+COPY ./run.sh /tmp/run.sh
+RUN chmod +x /tmp/run.sh
 
 #entrypoint
 ENTRYPOINT ["entrypoint.sh"]
+
 CMD ["php-fpm"]

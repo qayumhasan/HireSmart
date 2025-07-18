@@ -44,6 +44,11 @@
                                         "format": "email",
                                         "example": "jane@example.com"
                                     },
+                                    "role": {
+                                        "type": "string",
+                                        "format": "role",
+                                        "example": "candidate"
+                                    },
                                     "password": {
                                         "type": "string",
                                         "format": "password",
@@ -104,12 +109,12 @@
                                     "email": {
                                         "type": "string",
                                         "format": "email",
-                                        "example": "jane@example.com"
+                                        "example": "admin@gmail.com"
                                     },
                                     "password": {
                                         "type": "string",
                                         "format": "password",
-                                        "example": "secret123"
+                                        "example": "password"
                                     }
                                 },
                                 "type": "object"
@@ -190,7 +195,7 @@
                     "Jobs"
                 ],
                 "summary": "List available jobs",
-                "operationId": "56ef1c44e6ef2f481c032ab808a32371",
+                "operationId": "82e747960400b8d2d6c9c936a15f4bf1",
                 "parameters": [
                     {
                         "name": "keyword",
@@ -217,163 +222,6 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "sanctum": []
-                    }
-                ]
-            }
-        },
-        "/api/jobs/{job}/apply": {
-            "post": {
-                "tags": [
-                    "Applications"
-                ],
-                "summary": "Apply to a job",
-                "operationId": "89341e0122b11098bd17f98a03cf7d7c",
-                "parameters": [
-                    {
-                        "name": "job",
-                        "in": "path",
-                        "description": "ID of the job",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "required": [
-                                    "resume"
-                                ],
-                                "properties": {
-                                    "cover_letter": {
-                                        "type": "string"
-                                    },
-                                    "resume": {
-                                        "description": "PDF file",
-                                        "type": "string",
-                                        "format": "binary"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Application submitted",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Application submitted successfully."
-                                        },
-                                        "application": {
-                                            "properties": {
-                                                "id": {
-                                                    "type": "integer",
-                                                    "example": 123
-                                                },
-                                                "user_id": {
-                                                    "type": "integer",
-                                                    "example": 45
-                                                },
-                                                "job_id": {
-                                                    "type": "integer",
-                                                    "example": 10
-                                                },
-                                                "cover_letter": {
-                                                    "type": "string",
-                                                    "example": "I am very interested in this position."
-                                                },
-                                                "resume_path": {
-                                                    "type": "string",
-                                                    "example": "resumes/abc123.pdf"
-                                                },
-                                                "created_at": {
-                                                    "type": "string",
-                                                    "format": "date-time",
-                                                    "example": "2025-06-30T12:34:56Z"
-                                                },
-                                                "updated_at": {
-                                                    "type": "string",
-                                                    "format": "date-time",
-                                                    "example": "2025-06-30T12:34:56Z"
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "description": "Validation error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "The given data was invalid."
-                                        },
-                                        "errors": {
-                                            "type": "object",
-                                            "example": {
-                                                "resume": [
-                                                    "The resume field is required."
-                                                ]
-                                            }
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Bad request error message."
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Server error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "An unexpected error occurred."
-                                        }
-                                    },
                                     "type": "object"
                                 }
                             }
@@ -721,10 +569,6 @@
         {
             "name": "Jobs",
             "description": "Jobs"
-        },
-        {
-            "name": "Applications",
-            "description": "Applications"
         },
         {
             "name": "Employers Job Management Bord",

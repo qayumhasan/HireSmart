@@ -24,7 +24,7 @@ class JobManagementRequest extends FormRequest
         return [
             'title'       => 'required|string|max:255',
             'description' => 'required|string',
-            'locations.*'    => 'required|integer|exists:locations,id',
+            'location_id'    => 'required|integer|exists:locations,id',
 
             'skills'         => 'required|array',
             'skills.*'       => 'required|integer|exists:skills,id',

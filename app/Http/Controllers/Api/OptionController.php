@@ -18,6 +18,10 @@ class OptionController extends Controller
         ];
     }
 
+    /**
+     * Get All Locations
+     * @return [type]
+     */
     public function locations()
     {
         $locations = Location::select('id', 'name')->orderBy('id', 'desc')->get();
@@ -26,6 +30,13 @@ class OptionController extends Controller
             'locations' => $locations
         ]);
     }
+
+    /**
+     * Store All Locations
+     * @param Request $request
+     *
+     * @return [type]
+     */
     public function locationStore(Request $request){
         $location = new Location();
         $location->name = $request->input('name','');
@@ -36,6 +47,12 @@ class OptionController extends Controller
         ], 201);
     }
 
+    /**
+     * Edit  locations
+     * @param Location $location
+     *
+     * @return [type]
+     */
     public function locationEdit(Location $location)
     {
         return response()->json([
@@ -44,6 +61,13 @@ class OptionController extends Controller
         ]);
     }
 
+    /**
+     * Update  locations
+     * @param Request $request
+     * @param Location $location
+     *
+     * @return [type]
+     */
     public function locationUpdate(Request $request,Location $location){
 
         $location->name = $request->input('name','');
@@ -54,6 +78,13 @@ class OptionController extends Controller
         ], 201);
     }
 
+    /**
+     * Delete  locations
+     *
+     * @param Location $location
+     *
+     * @return [type]
+     */
     public function locationDelete(Location $location) {
         $location->delete();
         return response()->json(['message' => 'Location deleted successfully.']);
@@ -61,6 +92,10 @@ class OptionController extends Controller
 
     // ====================================================================
 
+    /**
+     * show all skills
+     * @return [type]
+     */
     public function skills()
     {
         $skills = Skill::select('id', 'name')->orderBy('id', 'desc')->get();
@@ -69,6 +104,13 @@ class OptionController extends Controller
             'skills' => $skills
         ]);
     }
+
+    /**
+     * store skill
+     * @param Request $request
+     *
+     * @return [type]
+     */
     public function skillStore(Request $request){
         $skill = new Skill();
         $skill->name = $request->input('name','');
@@ -79,6 +121,12 @@ class OptionController extends Controller
         ], 201);
     }
 
+    /**
+     * Edit skill
+     * @param Skill $skill
+     *
+     * @return [type]
+     */
     public function skillEdit(Skill $skill)
     {
         return response()->json([
@@ -87,6 +135,13 @@ class OptionController extends Controller
         ]);
     }
 
+    /**
+     * Update Skill
+     * @param Request $request
+     * @param Skill $skill
+     *
+     * @return [type]
+     */
     public function skillUpdate(Request $request,Skill $skill){
 
         $skill->name = $request->input('name','');
@@ -97,6 +152,12 @@ class OptionController extends Controller
         ], 201);
     }
 
+    /**
+     * Delete Skill
+     * @param Skill $skill
+     *
+     * @return [type]
+     */
     public function skillDelete(Skill $skill) {
         $skill->delete();
         return response()->json(['message' => 'Skill deleted successfully.']);

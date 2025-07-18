@@ -6,8 +6,12 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\JobManagement;
 use App\Models\JobApplication;
+use App\Models\User;
 use App\Repositories\Contracts\CandidateRepositoryInterface;
 use App\Http\Requests\JobSearchRequest;
+use App\Http\Requests\ProfileRequest;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Arr;
 
 class CandidateController extends Controller
 {
@@ -154,20 +158,26 @@ class CandidateController extends Controller
   *
   * @return [type]
   */
- public function profileUpdate(Request $request)
+ public function profileUpdate(ProfileRequest $request)
  {
-    $validated = $request->validate([
-        'name' => 'required|string|max:255',
-        'email' => 'required|email|max:255',
-        'selectedSkills' => 'required|array|min:1',
-        'selectedSkills.*' => 'integer|exists:skills,id',
-        'locations' => 'required|integer|exists:locations,id',
-    ]);
+    DB::beginTransaction();
 
-    $user = $request->user();
-    $user->skills()->sync($validated['selectedSkills']);
-    $user->locations()->sync($validated['locations']);
+    try {
+        $validated = $request->validated();
+        $user = User::findOrFail(auth()->user()->id);
 
+        $user->update(Arr::except($validated, ['selectedSkills']));
+
+        $user->skills()->sync($validated['selectedSkills']);
+
+        DB::commit();
+
+        return response()->json(['message' => 'Profile updated successfully.']);
+    } catch (\Throwable $e) {
+        DB::rollBack();
+
+        return response()->json(['error' => 'Something went wrong.'], 500);
+    }
     return response()->json(['message' => 'User Information updated successfully']);
  }
 

@@ -14,7 +14,7 @@ class MatchCandidatesToJobs implements ShouldQueue
 
     public function handle(): void
     {
-        User::where('role','candidate')->query()
+        User::where('role','candidate')
             ->select('id')
             ->chunkById(10000, function ($candidatesChunk) {
                 Bus::batch(

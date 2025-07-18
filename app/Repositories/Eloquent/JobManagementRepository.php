@@ -9,6 +9,7 @@ use App\Models\JobManagement;
 use App\Http\Requests\JobManagementRequest;
 use Illuminate\Support\Facades\DB;
 use App\Models\JobApplication;
+use Illuminate\Support\Facades\Cache;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -20,7 +21,14 @@ class JobManagementRepository implements JobManagementRepositoryInterface
      */
     public function Jobs(): Collection
     {
-        return JobManagement::with(['skills:id,name','locations:id,name'])->orderBy('expires_at','DESC')->get();
+        return Cache::remember('recent_jobs', now()->addMinutes(5), function () {
+            return JobManagement::with(['skills:id,name', 'location:id,name'])
+                ->when(auth()->user()->role !== 'admin', function ($query) {
+                    $query->where('employer_id', auth()->user()->id);
+                })
+                ->orderBy('expires_at', 'DESC')
+                ->get();
+        });
     }
 
     /**
@@ -34,18 +42,19 @@ class JobManagementRepository implements JobManagementRepositoryInterface
         DB::beginTransaction();
 
         try {
+
             $validated = $request->validated();
             $validated['posted_at'] = $validated['posted_at'] ?? now();
             $validated['employer_id'] = $request->user()->id;
+
             $job = JobManagement::create($validated);
-            if (!empty($validated['locations'])) {
-                $job->locations()->attach($validated['locations']);
-            }
+
             if (!empty($validated['skills'])) {
                 $job->skills()->attach($validated['skills']);
             }
             DB::commit();
             $job->load(['skills:id,name']);
+            Cache::forget('recent_jobs');
             return $job;
         } catch (Exception $e) {
             DB::rollBack();
@@ -66,9 +75,10 @@ class JobManagementRepository implements JobManagementRepositoryInterface
         'min_salary',
         'max_salary',
         'is_active',
+        'location_id',
         'posted_at',
         'expires_at')
-    ->with(['skills:id,name','applications.user:id,name,email'])
+    ->with(['skills:id,name','applications.user:id,name,email','location:id,name'])
     ->findOrFail($id);
     }
 
@@ -88,15 +98,15 @@ class JobManagementRepository implements JobManagementRepositoryInterface
             $validated = $request->validated();
             $validated['employer_id'] = $request->user()->id;
             $validated['posted_at'] = $validated['posted_at'] ?? now();
+
             $job->update($validated);
-            if (!empty($validated['locations'])) {
-                $job->locations()->sync($validated['locations']);
-            }
+
             if (!empty($validated['skills'])) {
                 $job->skills()->sync($validated['skills']);
             }
+
             DB::commit();
-            $job->load(['skills:id,name', 'locations:id,name']);
+            $job->load(['skills:id,name', 'location:id,name']);
             return $job;
         } catch (Exception $e) {
             DB::rollBack();
