@@ -6,12 +6,19 @@ use Illuminate\Database\Eloquent\Model;
 
 class Skill extends Model
 {
+    /**
+     * @return [type]
+     */
     public function jobs()
-{
-    return $this->morphedByMany(JobManagement::class, 'skillable');
-}
-public function users()
-{
-    return $this->morphedByMany(User::class, 'skillable');
-}
+        {
+            return $this->morphedByMany(JobManagement::class, 'skillable');
+        }
+        
+    /**
+     * @return [type]
+     */
+    public function users()
+        {
+            return $this->morphedByMany(User::class, 'skillable');
+        }
 }

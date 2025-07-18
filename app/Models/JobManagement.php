@@ -20,34 +20,54 @@ class JobManagement extends Model
         'expires_at',
     ];
 
+    /**
+     *
+     * @return [type]
+     */
     public function skills()
-{
-    return $this->morphToMany(Skill::class, 'skillable');
-}
+    {
+        return $this->morphToMany(Skill::class, 'skillable');
+    }
 
-public function location()
-{
-    return $this->belongsTo(Location::class);
-}
+    /**
+     *
+     * @return [type]
+     */
+    public function location()
+    {
+        return $this->belongsTo(Location::class);
+    }
 
+    /**
+     *
+     * @return HasMany
+     */
     public function applications(): HasMany
     {
         return $this->hasMany(JobApplication::class,'job_id');
     }
 
-public function postedAtFormatted(): Attribute
-{
-    return Attribute::get(
-        fn () => $this->posted_at?->format('M d, Y')
-    );
-}
+    /**
+     *
+     * @return Attribute
+     */
+    public function postedAtFormatted(): Attribute
+    {
+        return Attribute::get(
+            fn () => $this->posted_at?->format('M d, Y')
+        );
+    }
 
-public function expiresAtFormatted(): Attribute
-{
-    return Attribute::get(
-        fn () => $this->expires_at?->format('M d, Y')
-    );
-}
+    /**
+     *
+     * @return Attribute
+     */
+    public function expiresAtFormatted(): Attribute
+    {
+        return Attribute::get(
+            fn () => $this->expires_at?->format('M d, Y')
+        );
+    }
 
     protected $casts = [
         'posted_at' => 'datetime',

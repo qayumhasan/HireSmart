@@ -11,10 +11,19 @@ class JobApplication extends Model
         'user_id', 'job_id', 'cover_letter', 'resume_path',
     ];
 
+    /**
+     *
+     * @return BelongsTo
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
+
+    /**
+     *
+     * @return BelongsTo
+     */
     public function job(): BelongsTo
     {
         return $this->belongsTo(JobManagement::class);
